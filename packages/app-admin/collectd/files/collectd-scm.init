@@ -1,0 +1,32 @@
+#!/sbin/runscript
+# Copyright 1999-2008 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+# Assign defaults to parameters from /etc/conf.d/collectd
+: ${COLLECTD_PIDFILE:='/var/run/collectdmon.pid'}
+: ${COLLECTD_NICE:='5'}
+: ${COLLECTD_CONFIG:='/etc/collectd.conf'}
+
+depend()
+{
+    after logger net firewall dns \
+	lm_sensors cpufreqd nfs apache lighttpd nginx mysql
+}
+
+start()
+{
+    ebegin "Starting collectd"
+    start-stop-daemon --start --pidfile ${COLLECTD_PIDFILE} \
+	--nice ${COLLECTD_NICE} --exec /usr/sbin/collectdmon \
+	-- -P ${COLLECTD_PIDFILE} -- -C ${COLLECTD_CONFIG}
+    eend $? "Failed to start collectd"
+}
+
+stop()
+{
+    ebegin "Stopping collectd"
+    start-stop-daemon --stop --pidfile ${COLLECTD_PIDFILE}
+    eend $? "Failed to stop collectd"
+}
+

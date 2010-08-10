@@ -1,0 +1,68 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="git://git.verplant.org/collectd.git"
+require scm-git
+
+PLATFORMS="~amd64 ~x86"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS="perl python java
+    debug [[ description = [ Compile with debug mode enabled ] ]]"
+
+SUMMARY="A small daemon to collect system statistics."
+HOMEPAGE="http://collectd.org/"
+
+BUGS_TO="ajdiaz@connectical.com"
+
+REMOTE_IDS="freshmeat:${PN}"
+
+UPSTREAM_CHANGELOG="http://github.com/octo/collectd/raw/master/ChangeLog"
+UPSTREAM_DOCUMENTATION="http://collectd.org/wiki/index.php/Main_Page"
+
+DEPENDENCIES="
+    build:
+        sys-devel/flex
+        dev-util/pkg-config
+        sys-devel/autoconf:2.5
+        sys-devel/automake:1.11
+        sys-devel/m4
+
+    build+run:
+        perl? ( dev-lang/perl )
+        python? ( dev-lang/python[>=2.3&<3.0] )
+        java? ( virtual/jdk[>=1.5] )"
+
+src_prepare()
+{
+    # fix lexer to use flex
+    edo sed s:lex:flex: -i build.sh
+    ./build.sh || die "failed to run build.sh script"
+}
+
+src_configure()
+{
+    econf --localstatedir=/var  \
+        $(option_enable python) \
+        $(option_enable perl)   \
+        $(option_enable java)   \
+        $(option_enable debug)
+}
+
+src_install()
+{
+    default
+
+    # logdir is empty in image
+    rm -rf ${IMAGE}/var/log
+
+    # rundir is empty in image
+    rm -rf ${IMAGE}/var/run
+
+    newinitd "${FILES}/${PNV}.init" collectd
+    newconfd "${FILES}/${PNV}.conf" collectd
+
+    keepdir /var/lib/collectd
+    emagicdocs
+}
