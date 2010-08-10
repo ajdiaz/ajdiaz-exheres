@@ -1,0 +1,30 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+
+PLATFORMS="~amd64 ~x86"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS=""
+
+SUMMARY="A small daemon to collect system statistics."
+HOMEPAGE="http://code.google.com/p/credis/"
+
+BUGS_TO="ajdiaz@connectical.com"
+
+DOWNLOADS="http://credis.googlecode.com/files/credis-${PV}.tar.gz"
+
+REMOTE_IDS="googlecode:credis"
+
+DEPENDENCIES="suggestion: dev-db/redis"
+
+WORK="${WORKBASE}/credis/"
+
+src_install()
+{
+    dolib libcredis.so libcredis.a
+    dobin credis-test
+    mkdir -p ${IMAGE}/usr/include/
+    edo cp credis.h ${IMAGE}/usr/include/
+    emagicdocs
+}
