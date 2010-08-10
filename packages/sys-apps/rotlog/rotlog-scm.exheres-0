@@ -1,0 +1,22 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="git://furi-ku.org/code/rotlog"
+require scm-git
+
+PLATFORMS="~amd64 ~x86"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS=""
+
+SUMMARY="metalog inspired replacement for multilog"
+HOMEPAGE="http://furi-ku.org/+/cgit/code/rotlog/"
+
+BUGS_TO="ajdiaz@connectical.com"
+
+src_install () {
+    dobin rotlog
+    doman rotlog.8
+}
+
