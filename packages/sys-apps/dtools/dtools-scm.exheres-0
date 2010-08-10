@@ -1,0 +1,53 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="git://github.com/ajdiaz/dtools.git"
+require scm-git multilib
+
+SUMMARY="Distributed tools to run commands concurrently in many hosts."
+DESCRIPTION="
+    Distributed tools, aka dtools is a project written in bash coding to
+    create a suite of programs to allow running different UNIX commands
+    in parallel in a list of tagged hosts. This utility is based on
+    capistrano for Ruby or fabric for Python, but in pure bash."
+
+HOMEPAGE="http://github.com/ajdiaz/dtools"
+DOWNLOADS=""
+
+LICENCES="GPL-2"
+SLOT="0"
+
+BUGS_TO="ajdiaz@connectical.com"
+REMOTE_IDS="github:${PN}"
+
+PLATFORMS="~amd64 ~x86 ~ppc"
+
+DEPENDENCIES="
+    build+run:
+        app-shells/bash[>=4.0]
+        net-misc/openssh[>=4.6]
+        sys-apps/coreutils[>=8.5]"
+
+
+src_install() {
+    edo sed -i s:/usr/lib/:/usr/$(get_libdir)/:g dt
+    edo sed -i s:/usr/lib/:/usr/$(get_libdir)/:g dthost
+    edo sed -i s:/usr/lib/:/usr/$(get_libdir)/:g dtstatus
+    edo sed -i s:/usr/lib/:/usr/$(get_libdir)/:g doc/man/dt.1
+    edo sed -i s:/usr/lib/:/usr/$(get_libdir)/:g doc/man/dthost.1
+    edo sed -i s:/usr/lib/:/usr/$(get_libdir)/:g doc/man/dtstatus.1
+
+    emagicdocs
+
+    dobin dt
+    dobin dthost
+    dobin dtstatus
+
+    dodir /usr/$(get_libdir)/dtools/commands
+    dodir /usr/$(get_libdir)/dtools/patterns
+    insinto usr/$(get_libdir)/dtools/commands
+    doins lib/commands/*.bash
+    insinto usr/$(get_libdir)/dtools/patterns
+    doins lib/patterns/*.bash
+}
+
