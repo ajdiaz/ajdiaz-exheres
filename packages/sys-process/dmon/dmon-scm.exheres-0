@@ -1,0 +1,26 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="git://furi-ku.org/code/dmon"
+require scm-git
+
+PLATFORMS="~amd64 ~x86"
+
+LICENCES="MIT"
+SLOT="0"
+MYOPTIONS=""
+
+SUMMARY="Toolset for daemonizing and supervising processes"
+HOMEPAGE="http://furi-ku.org/+/cgit/code/dmon/"
+
+BUGS_TO="ajdiaz@connectical.com"
+
+DEPENDENCIES="
+    build:
+        sys-devel/make"
+
+src_install()
+{
+    einstall DESTDIR="${IMAGE}" prefix="/usr"
+    emagicdocs
+}
