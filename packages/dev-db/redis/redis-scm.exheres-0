@@ -1,0 +1,55 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+#
+# Based in part upon 'redis-1.2.6.ebuild', which is:
+#     Copyright 1999-2010 Gentoo Foundation
+
+SCM_REPOSITORY="git://github.com/antirez/redis.git"
+require scm-git
+
+PLATFORMS="~amd64 ~x86"
+
+LICENCES="BSD"
+SLOT="0"
+
+# XXX: to test redis sydbox must be allow bindings in certain ports.
+RESTRICT="test"
+
+SUMMARY="Persistent distributed key-value data caching system."
+HOMEPAGE="http://code.google.com/p/redis/"
+
+DEPENDENCIES="
+    build:
+        dev-util/pkg-config
+        sys-devel/autoconf:2.5
+        sys-devel/automake:1.11
+        sys-devel/m4
+
+    post:
+        user/${PN}
+        group/${PN}
+
+    test:
+        dev-lang/tcl"
+
+BUGS_TO="ajdiaz@connectical.com"
+
+REMOTE_IDS="googlecode:${PN}"
+
+UPSTREAM_CHANGELOG="http://github.com/antirez/redis/raw/d9dd352b3693e1ad8ab2e0993b4f0a275d7fd512/Changelog"
+UPSTREAM_DOCUMENTATION="http://code.google.com/p/redis/wiki/index?tm=6"
+
+src_install()
+{
+    # XXX: The Makefile do not create the directory if this don't exists.
+    mkdir -p "${IMAGE}/bin"
+
+    einstall INSTALL_TOP="${IMAGE}"
+
+    newinitd "${FILES}/${PNV}.init" ${PN}
+    newconfd "${FILES}/${PNV}.conf" ${PN}
+
+    keepdir /var/lib/${PN}
+    keepdir /var/run/${PN}
+    emagicdocs
+}
