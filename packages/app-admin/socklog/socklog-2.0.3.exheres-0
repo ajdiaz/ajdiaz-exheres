@@ -1,0 +1,39 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+#
+# Based in part upon 'socklog-2.0.2-r1.ebuild', which is:
+#     Copyright 2008 Gentoo Foundation
+
+require flag-o-matic alternatives
+
+PLATFORMS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86"
+LICENCES="BSD"
+SLOT="0"
+MYOPTIONS="static"
+
+SUMMARY="Small secure replacement for syslogd with automatic log rotation"
+HOMEPAGE="http://smarden.org/socklog"
+DOWNLOADS="http://smarden.org/socklog2/${PNV}.tar.gz"
+
+BUGS_TO="ajdiaz@connectical.com"
+
+DEPENDENCIES=""
+
+WORK=${WORKBASE}/admin/${PNV}
+
+src_compile() {
+    cd src
+    option static && append-ldflags -static
+    emake || die "make failed"
+}
+
+src_install() {
+    cd src
+    dobin tryto uncat socklog-check || die "dobin"
+    dosbin socklog socklog-conf || die "dosbin"
+
+    cd "${WORK}"
+    emagicdocs
+}
+
+
