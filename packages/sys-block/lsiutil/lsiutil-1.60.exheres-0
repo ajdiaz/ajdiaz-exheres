@@ -1,0 +1,49 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+#
+# Based in part upon 'runit-2.0.0.ebuild', which is:
+#     Copyright 2008 Gentoo Foundation
+
+PLATFORMS="~amd64 ~x86"
+LICENCES="LSI"
+SLOT="0"
+MYOPTIONS=""
+
+require toolchain-funcs
+
+SUMMARY="LSI Logic Fusion MPT Command Line Interface management tool"
+HOMEPAGE="http://www.lsi.com/"
+DOWNLOADS="http://www.lsi.com/DistributionSystem/AssetDocument/support/downloads/hbas/fibre_channel/hardware_drivers/LSIUtil%20Kit_${PV}.zip"
+
+LICENCES="LSI"
+SLOT="0"
+PLATFORMS="~amd64 ~x86"
+
+RESTRICT="strip mirror test bindist"
+
+DEPENDENCIES="
+    build:
+        app-arch/unzip
+		sys-kernel/linux-headers[>=2.6.27]"
+
+WORK="${WORKBASE}/${PN}"
+
+src_unpack() {
+    unpack ${ARCHIVES}
+    # nested files
+    unpack ./Source/${PN}.tar.gz
+}
+
+src_compile() {
+     ${CC} ${CFLAGS} ${LDFLAGS} -o ${PN} ${PN}.c || die "emake failed."
+}
+
+src_install() {
+    dosbin ${PN} || die "dosbin failed."
+    dodoc "${WORKBASE}"/*.txt
+}
+
+pkg_postinst() {
+    einfo "See LsiUtil_ReadMe.txt for a list of supported controllers"
+    einfo "and general usage information."
+}

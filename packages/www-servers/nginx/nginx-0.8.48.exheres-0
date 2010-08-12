@@ -1,0 +1,44 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+#
+# Based in part upon 'nginx-0.8.19.exeheres-0' which is:
+#   Copyright 2009 Timothy Redaelli <timothy@redaelli.eu>
+#
+# Based in part upon 'nginx-0.7.43.ebuild', which is:
+#     Copyright 1999-2009 Gentoo Foundation
+
+PLATFORMS="~amd64 ~x86"
+
+SLOT=0
+
+require nginx
+
+MYOPTIONS+="nginx_modules_http_headers_more [[ description = [ Enable HTTP headers more module ] ]]
+            nginx_modules_http_push [[ description = [ Enable HTTP push module ] ]]
+            nginx_modules_http_fancyindex [[ description = [ Enable Fancyindex module ] ]]
+            nginx_modules_http_chunking [[ description = [ Enable HTTP Chunking module ] ]]
+            pam
+            "
+
+DEPENDENCIES="pam? ( sys-libs/pam )"
+
+DOWNLOADS+="
+    nginx_modules_http_headers_more? ( http://github.com/agentzh/headers-more-nginx-module/tarball/v0.13 -> headers-mode-nginx-module.tar.gz )
+    nginx_modules_http_push? ( http://pushmodule.slact.net/downloads/nginx_http_push_module-0.692.tar.gz )
+    nginx_modules_http_fancyindex? ( http://furi-ku.org/+/cgit/code/ngx-fancyindex/snapshot/ngx-fancyindex-0.2.5.tar.gz )
+    nginx_modules_http_chunking? ( http://github.com/agentzh/chunkin-nginx-module/tarball/v0.21 -> chunkin-nginx-module.tar.gz )
+    pam? ( http://web.iti.upv.es/~sto/nginx/ngx_http_auth_pam_module-1.1.tar.gz )
+"
+
+src_configure ()
+{
+    modules=""
+
+    option nginx_modules_http_headers_more && modules+=" "${WORKBASE}/agentzh-headers-more-nginx-module*
+    option nginx_modules_http_push && modules+=" "${WORKBASE}/nginx_http_push*
+    option nginx_modules_http_fancyindex && modules+=" "${WORKBASE}/ngx-fancyindex*
+    option nginx_modules_http_chunking && modules+=" "${WORKBASE}/agentzh-chunkin-nginx-module-*
+    option pam && modules+=" "${WORKBASE}/ngx_http_auth_pam_module*
+
+    nginx_src_configure $modules
+}

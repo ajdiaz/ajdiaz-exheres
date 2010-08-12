@@ -1,0 +1,44 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+#
+# Based in part upon 'runit-2.0.0.ebuild', which is:
+#     Copyright 2008 Gentoo Foundation
+
+
+PYTHON_DEPEND="2"
+SUPPORT_PYTHON_ABIS="1"
+RESTRICT_PYTHON_ABIS="3.*"
+
+require distutils
+
+SUMMARY="Remote python call"
+HOMEPAGE="http://rpyc.wikidot.com/"
+DESCRIPTION="
+    RPyC (ronounced like are-pie-see), or Remote Python Call, is a
+    transparent and symmetrical python library for remote procedure
+    calls, clustering and distributed-computing. RPyC makes use of
+    object-proxying, a technique that employs python's dynamic nature,
+    to overcome the physical boundaries between processes and
+    computers, so that remote objects can be manipulated as if they
+    were local."
+
+BUGS_TO="ajdiaz@connectical.com"
+
+REMOTE_IDS="sourceforge:${PN}"
+
+UPSTREAM_DOCUMENTATION="http://rpyc.wikidot.com/start"
+
+DOWNLOADS="mirror://sourceforge/${PN}/${PNV}.tar.gz"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64 ~x86"
+MYOPTIONS="crypt"
+
+DEPENDENCIES="
+   run:
+    crypt? ( dev-python/tlslite )
+   build:
+	dev-python/setuptools"
+
+

@@ -1,0 +1,65 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+#
+# Based in part upon 'runit-2.0.0.ebuild', which is:
+#     Copyright 2008 Gentoo Foundation
+
+PLATFORMS="~amd64 ~x86"
+LICENCES="LSI"
+SLOT="0"
+MYOPTIONS=""
+
+require rpm
+
+SUMMARY="LSI Logic MegaRAID Command Line Interface management tool"
+HOMEPAGE="http://www.lsi.com/"
+DOWNLOADS="http://www.lsi.com/DistributionSystem/AssetDocument/${PV}_Linux_MegaCLI.zip"
+
+UPSTREAM_DOCUMENTATION="http://www.lsi.com/DistributionSystem/AssetDocument/${PV}_Linux_MegaCLI.txt"
+
+DEPENDENCIES="
+    build:
+        app-arch/unzip"
+
+RESTRICT="strip mirror test"
+
+WORK="${WORKBASE}"
+
+src_unpack() {
+    unpack ${ARCHIVES}
+    cd "${WORK}"
+    unpack ./MegaCliLin.zip || die "failed to unpack inner ZIP"
+    rpm_unpack "${WORK}"/MegaCli-${PV}-1.i386.rpm || die "failed to unpack RPM"
+}
+
+src_compile() {
+    echo "Nothing to compile."
+}
+
+src_install() {
+    exeinto /opt/MegaRAID/MegaCli
+    case ${ARCH:-$(uname -m)} in
+        amd64|x86_64) MegaCli=MegaCli64;;
+        x86|i?86) MegaCli=MegaCli;;
+        *) die "invalid ARCH";;
+    esac
+    doexe opt/MegaRAID/MegaCli/${MegaCli}
+    mkdir -p ${IMAGE}/usr/sbin
+    dosym /opt/MegaRAID/MegaCli/${MegaCli} /usr/sbin/MegaCli
+}
+
+pkg_postinst() {
+    einfo
+    einfo "See ${PV}_Linux_MegaCli.txt for a list of supported controllers"
+    einfo "(contains LSI model names only, not those sold by 3rd parties"
+    einfo "under custom names like Dell PERC etc)."
+    einfo
+    einfo "As there's no dedicated manual, you might want to have"
+    einfo "a look at the following cheat sheet (originally written"
+    einfo "for Dell PowerEdge Expandable RAID Controllers):"
+    einfo "http://tools.rapidsoft.de/perc/perc-cheat-sheet.html"
+    einfo
+    einfo "For more information about working with Dell PERCs see:"
+    einfo "http://tools.rapidsoft.de/perc/"
+    einfo
+}
