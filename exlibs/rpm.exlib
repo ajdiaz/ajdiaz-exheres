@@ -1,0 +1,13 @@
+# Copyright 2010 Andres J. Diaz
+# Distributed under the terms of the GNU General Public License v2
+
+rpm_unpack () {
+    UNPACKTODIR="${UNPACKTODIR:-$PWD}"
+    echo ">>> Unpacking ${1} to ${UNPACKTODIR}"
+    [[ "${1:0:2}" == "./" ]] || x="${UNPACKFROMDIR}/${1}"
+    mkdir -p "${UNPACKTODIR}"
+    cd "${UNPACKTODIR}"
+
+    rpm2targz -O "${1}" | tar zx --no-same-owner "${TAR_OPTIONS[@]}"
+}
+
