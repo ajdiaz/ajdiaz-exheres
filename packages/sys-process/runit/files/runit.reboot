@@ -1,0 +1,4 @@
+#! /bin/sh
+
+/sbin/runit-init 6
+

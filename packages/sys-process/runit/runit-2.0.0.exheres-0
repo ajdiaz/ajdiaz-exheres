@@ -58,5 +58,60 @@ src_install() {
         done
         dosym ../all/getty-$tty /etc/runit/runsvdir/default/getty-$tty
     done
+
+    # alternatives
+    dobin ${FILES}/runit.halt
+    dobin ${FILES}/runit.reboot
+    
+    local a t alternatives=( init ${PN} 10 )
+
+    for a in init telinit; do
+    	if [[ -L "${IMAGE}"/sbin/${a} ]]; then
+		t=$(readlink "${IMAGE}"/sbin/${a})
+		edo rm "${IMAGE}"/sbin/${a}
+	else
+		t=/sbin/runit-init
+	fi
+	alternatives+=( /sbin/${a} ${t}
+			/usr/share/man/man8/${a}.8 runit-init.8 )
+    done
+
+    for a in halt poweroff shutdown; do
+        if [[ -L "${IMAGE}"/sbin/${a} ]]; then
+            t=$(readlink "${IMAGE}"/sbin/${a})
+            edo rm "${IMAGE}"/sbin/${a}
+        else
+            t=/usr/bin/${PN}.halt
+        fi
+        alternatives+=( /sbin/${a} ${t}
+                        /usr/share/man/man8/${a}.8 ${PN}.${a}.8 )
+    done
+
+    for a in reboot; do
+        if [[ -L "${IMAGE}"/sbin/${a} ]]; then
+            t=$(readlink "${IMAGE}"/sbin/${a})
+            edo rm "${IMAGE}"/sbin/${a}
+        else
+            t=/usr/bin/${PN}.reboot
+        fi
+        alternatives+=( /sbin/${a} ${t}
+                        /usr/share/man/man8/${a}.8 ${PN}.${a}.8 )
+    done
+
+    alternatives_for "${alternatives[@]}"
 }
+
+pkg_postinst() {
+    # Reload init to fix unmounting problems of / on next reboot.
+    # This is really needed because without it, init wouldn't quit properly during
+    # the next shutdown and would cause a fsck of / during the next reboot.
+    if [[ ${ROOT} == / ]] ; then
+        # Do not return an error if this fails
+        /sbin/telinit U &>/dev/null
+    fi
+    alternatives_pkg_postinst
+}
+
+
+
 
