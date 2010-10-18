@@ -1,0 +1,22 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+# Based in part upon scm-git.exlib, which is:
+#    Copyright 2008 David Leverton
+#   Based in part upon git.exlib, which is:
+#      Copyright 2008 Fernando J. Pereda
+#      Based upon 'git.eclass' which is:
+#         Copyright 1999-2007 Gentoo Foundation
+
+if [[ -z ${SCM_TYPE} ]]; then
+    SCM_TYPE=git
+    require scm-git
+fi
+
+scm-git-submodule_src_prepare () {
+    for var in ${SCM_GIT_SUBMODULES[@]}; do
+    cd "${WORK}" && git submodule update --init "${var}"
+    cd "${WORK}/${var}" && git checkout master
+    done
+}
+
+export_exlib_phases src_prepare

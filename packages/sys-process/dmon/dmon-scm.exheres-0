@@ -4,11 +4,14 @@
 SCM_REPOSITORY="git://furi-ku.org/code/dmon"
 require scm-git
 
+SCM_GIT_SUBMODULES=( "wheel" )
+require scm-git-submodule
+
 PLATFORMS="~amd64 ~x86"
 
 LICENCES="MIT"
 SLOT="0"
-MYOPTIONS="multicall [[ description = [ Build multicall binary ] ]]"
+MYOPTIONS=""
 
 SUMMARY="Toolset for daemonizing and supervising processes"
 HOMEPAGE="http://furi-ku.org/+/cgit/code/dmon/"
@@ -19,27 +22,8 @@ DEPENDENCIES="
     build:
         sys-devel/make"
 
-src_prepare()
-{
-    git submodule init && git submodule update
-    true
-}
-
-src_compile()
-{
-    if option multicall ; then
-        emake MULTICALL=1
-    else
-        default
-    fi
-}
-
 src_install()
 {
-    if option multicall ; then
-        einstall DESTDIR="${IMAGE}" prefix="/usr" MULTICALL=1
-    else
-        einstall DESTDIR="${IMAGE}" prefix="/usr"
-    fi
+    einstall DESTDIR="${IMAGE}" prefix="/usr"
     emagicdocs
 }
