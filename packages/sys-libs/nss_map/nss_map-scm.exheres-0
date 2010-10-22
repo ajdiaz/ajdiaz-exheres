@@ -1,0 +1,43 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="git://github.com/ajdiaz/libnss_map.git"
+require scm-git multilib
+
+SUMMARY="NSS library to map user credentials to virtual user in the system"
+DESCRIPTION="
+    The libnss_map module is a NSS library to map user credentials to
+    existent user in the system. This module is intended to be used
+    in high virtualized environment like cloud computing or embedded
+    systems which require a lot of users."
+
+HOMEPAGE="http://github.com/ajdiaz/libnss_map"
+DOWNLOADS=""
+
+LICENCES="GPL-2"
+SLOT="0"
+
+BUGS_TO="ajdiaz@connectical.com"
+REMOTE_IDS="github:${PN}"
+
+PLATFORMS="~amd64 ~x86"
+
+DEPENDENCIES=""
+
+# XXX A hack to find the properly NSS version to symlink the library.
+# This hack is based in how nss_ldap Makefile does. No very elegant.
+nss_version () {
+    ls /$(get_libdir)/libnss_files.so.? | tail -n 1 | sed -e 's|.*libnss_files\.so\.\(.*\)|\1|'
+}
+
+src_install () {
+
+    insinto /$(get_libdir)
+    doins src/libnss_map.so
+    dosym /$(get_libdir)/libnss_map.so /$(get_libdir)/libnss_map.so.$(nss_version)
+
+    insinto /etc
+    doins samples/nss_map.conf
+
+    emagicdocs
+}
