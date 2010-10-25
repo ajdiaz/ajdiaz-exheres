@@ -1,0 +1,28 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+#
+# Based in part upon 'setproctitle-1.1.ebuild', which is:
+#     Copyright 2008 Gentoo Foundation
+
+
+PYTHON_DEPEND="2"
+SUPPORT_PYTHON_ABIS="1"
+RESTRICT_PYTHON_ABIS="3.*"
+
+require distutils
+
+SUMMARY="Allow customization of the process title"
+HOMEPAGE="http://code.google.com/p/py-setproctitle/ http://pypi.python.org/pypi/setproctitle"
+
+BUGS_TO="ajdiaz@connectical.com"
+
+DOWNLOADS="http://pypi.python.org/packages/source/${PN:0:1}/${PN}/${PNV}.tar.gz"
+
+LICENCES="BSD"
+SLOT="0"
+PLATFORMS="~amd64 ~x86"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+RESTRICT="test" # Due to failures in python invokation.
+
