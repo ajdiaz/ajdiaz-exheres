@@ -1,0 +1,31 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="git://github.com/ajdiaz/btpd.git"
+require scm-git
+
+SUMMARY="BitTorrent client consisting of a daemon and client"
+DESCRIPTION="
+    The btpd BitTorrent client is a console batch client, which runs in
+    background, and provide a cli utilitie to manage torrents and
+    downloads."
+
+HOMEPAGE="http://github.com/ajdiaz/btpd"
+DOWNLOADS=""
+
+LICENCES="GPL-2"
+SLOT="0"
+
+BUGS_TO="ajdiaz@connectical.com"
+REMOTE_IDS="github:${PN}"
+
+PLATFORMS="~amd64 ~x86"
+
+DEPENDENCIES=""
+
+src_prepare () {
+    cd ${WORK}
+    edo sed -i s:lex:flex: ./build.sh
+    ./build.sh
+}
+
