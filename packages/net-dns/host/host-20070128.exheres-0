@@ -1,0 +1,49 @@
+# Copyright 2010 Andres J. Diaz <ajdiaz@connectical.com>
+# Distributed under the terms of the GNU General Public License v2
+#
+# Based in part upon 'host-20070128.ebuild', which is:
+#      Copyright 2008-2010 Gentoo Foundation
+
+require multilib
+
+PLATFORMS="~amd64 ~x86"
+
+LICENCES="as-is"
+SLOT="0"
+MYOPTIONS="debug"
+
+# Gentoo Bug 91515
+RESTRICT="test"
+
+SUMMARY="A powerful command-line DNS query and test tool"
+DOWNLOADS="ftp://ftp.weird.com/pub/local/${PNV}.tar.gz"
+HOMEPAGE="http://www.weird.com/~woods/projects/host.html"
+
+BUGS_TO="ajdiaz@connectical.com"
+
+REMOTE_IDS="freshmeat:${PN}"
+
+DEPENDENCIES=""
+
+src_prepare() {
+    expatch -p0 "${FILES}/${PNV}-Makefile.patch"
+    edo sed -i  -e "s:^\(# if defined(__alpha).*\):\1 || defined(__x86_64__):" \
+        port.h || die "sed failed"
+}
+
+src_compile() {
+    option debug && export DEBUGDEFS="-DDEBUG"
+    emake RES_LIB=/usr/$(get_libdir)/libresolv.a || die "emake failed"
+}
+
+src_install () {
+    # This tool has slightly different format of output from "standard" host.
+    # Renaming it to host-woods, hopefully this does not conflict with anything.
+
+    newbin host host-woods || die "newbin failed"
+    newman host.1 host-woods.1 || die "newman failed"
+    dodoc RELEASE_NOTES ToDo || die "dodoc failed"
+    dosym /usr/bin/host-woods /usr/bin/hostx
+}
+
+
